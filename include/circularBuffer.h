@@ -26,11 +26,11 @@ class circularBuffer {
 
     bool push_back(T element) {
       if (this->size() == S)
-		this->pop_front();
-	  
+        this->pop_front();
+      
       *this->head_++ = element;
-	  if (this->head_ == this->buffer_.end())
-	    this->head_ = this->buffer_.begin();
+      if (this->head_ == this->buffer_.end())
+        this->head_ = this->buffer_.begin();
 
       return false;
     }
