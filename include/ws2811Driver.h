@@ -53,7 +53,7 @@ struct ws2811Driver
 	{
 		volatile uint32_t colorVal = color.getAsRGBValue();
 
-		for(int i = 0; i<24; i++)
+		for(unsigned int i = 0; i<24; i++)
 		{
 			framePixelBuffer[n*24+i] = (colorVal & (1<<(23-i)))?highBitHighTime:lowBitHighTime;
 		}
@@ -61,7 +61,7 @@ struct ws2811Driver
 
 	void setFrame(const std::array<Color,numLeds> &frame, const std::array<uint8_t,numLeds> &mapping)
 	{
-		for(int i = 0; i<numLeds; i++)
+		for(unsigned int i = 0; i<numLeds; i++)
 		{
 			setLED(i,frame[mapping[i]]);
 		}
@@ -70,7 +70,7 @@ struct ws2811Driver
 	template<class Callable>
 	void setFrame(const Callable colormap, const std::array<uint8_t,numLeds> &mapping)
 	{
-		for(int i = 0; i<numLeds; i++)
+		for(unsigned int i = 0; i<numLeds; i++)
 		{
 			setLED(i,colormap(mapping[i]));
 		}
@@ -78,7 +78,7 @@ struct ws2811Driver
 
 	void setFrame(const std::array<Color, numLeds> frame)
 	{
-		for(int i = 0; i<numLeds;i++)
+		for(unsigned int i = 0; i<numLeds;i++)
 		{
 			setLED(i,frame[i]);
 		}
@@ -112,7 +112,7 @@ struct ws2811Driver
 
 	void sync()
 	{
-		while(!DMA1->ISR & DMA_ISR_TCIF3)
+		while((!(DMA1->ISR)) & (DMA_ISR_TCIF3))
 		{
 			__asm__("nop");
 		}
