@@ -30,7 +30,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stm32f30x.h>
-#include "diag/Trace.h"
+//#include "diag/Trace.h"
 #include <ws2811Driver.h>
 #include <Color.h>
 #include <timer.h>
@@ -39,9 +39,11 @@
 #include <algorithm>
 #include <Particle.h>
 #include <noise.h>
-#include <randomSparks.h>
-#include <ringLoad.h>
-#include <trailSpinner.h>
+#include <circularBuffer.h>
+
+#include "../animations/randomSparks.h"
+#include "../animations/ringLoad.h"
+#include "../animations/trailSpinner.h"
 
 // ----------------------------------------------------------------------------
 //
@@ -87,21 +89,32 @@ void setupClock()
 	RCC->CFGR |= RCC_CFGR_SW_PLL;
 }
 
-int
+void
 main()
 {
  	setupClock();
 	timer tim;
 	ws2811Driver<48> ledChain;
 
+	circularBuffer<int,10> circBuff{};
+
+	for(int i = 0; i<100; i++)
+	{
+		circBuff.push(i);
+	}
+
+	for(int i = 0; i<10; i++)
+	{
+		circBuff.pop();
+	}
+
+
 	auto frameBuffer = std::array<Color,numLeds>{};
 	auto sparklingAnim = randomSparks<numLeds>{frameBuffer,16,Color{0xFF,0xFF,0xFF}};
 	auto ringLoadAnim = ringLoad<numLeds>{frameBuffer};
-	auto trailSpinnerAnim =trailSpinner<numLeds>{frameBuffer};
-	auto trailSpinnerAnim2 =trailSpinner<numLeds>{frameBuffer};
-	auto trailSpinnerAnim3 = trailSpinner<numLeds>{frameBuffer};
-	trailSpinnerAnim3.angle = 32;
-	trailSpinnerAnim2.angle = 16;
+	auto trailSpinnerAnim =trailSpinner<numLeds,6>{frameBuffer};
+	auto trailSpinnerAnim2 =trailSpinner<numLeds,6>{frameBuffer,16};
+	auto trailSpinnerAnim3 = trailSpinner<numLeds,6>{frameBuffer,32};
 	ledChain.setFrame(frameBuffer);
 	ledChain.show();
 	int mode = 0;
@@ -123,6 +136,7 @@ main()
 			break;
 		case 1:
 			ringLoadAnim.update(5);
+			//change color after every completed cycle
 			if(ringLoadAnim.angle >= numLeds)
 			{
 				ringLoadAnim.color.g = std::rand()%0xFF;
