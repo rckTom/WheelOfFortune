@@ -57,6 +57,9 @@ dkms.conf
 
 ### C++ ###
 # Prerequisites
+Debug/
+Release/
+
 
 # Compiled Object files
 *.slo
