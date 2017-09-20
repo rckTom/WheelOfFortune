@@ -48,10 +48,10 @@ Color Color::fromHsv(float h, float s, float v)
 	return Color(r*0xFF,g*0xFF,b*0xFF);
 }
 
-void Color::setBrightness(float b)
+void Color::setBrightness(float bright)
 {
 	auto hsvValues = toHSV(*this);
-	hsvValues.v = b;
+	hsvValues.v = bright;
 	auto rgb = toRGB(hsvValues);
 	r = rgb.r;
 	g = rgb.g;
@@ -71,15 +71,15 @@ hsvValue Color::toHSV(const Color& color)
 	}
 	else if(max == color.r)
 	{
-		ret.h = 60.0*((color.g-color.b)/((float)max-min));
+		ret.h = 60.0*((color.g-color.b)/((float)(max-min)));
 	}
 	else if(max == color.g)
 	{
-		ret.h = 60.0*(2+(color.b-color.r)/((float)max-min));
+		ret.h = 60.0*(2.0+(color.b-color.r)/((float)(max-min)));
 	}
 	else if(max == color.b)
 	{
-		ret.h = 60.0*(4+(color.r-color.g)/((float)max-min));
+		ret.h = 60.0*(4.0+(color.r-color.g)/((float)(max-min)));
 	}
 
 	ret.h = ret.h<0?ret.h+360:ret.h;
