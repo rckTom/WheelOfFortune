@@ -30,6 +30,10 @@ public:
 		{
 			a = b;
 			b = std::rand()%0xFF;
+			y=a*amplitude;
+		}
+		else
+		{
 			y=interpolate(a,b,(x%wavelength)/(float)wavelength)*amplitude;
 		}
 		return y;
