@@ -9,7 +9,7 @@
 template<uint8_t numLed, unsigned int trailLength>
 class trailSpinner : public animation
 {
-	float speed = 1;
+	float speed = numLed/500.0;
 	float currentPos = 0.0;
 
 	std::array<Color,numLed> &frame;
@@ -43,16 +43,18 @@ public:
 	uint32_t update(uint32_t dt)
 	{
 		currentPos += speed*dt;
-		if((currentPos - trail.getHead()) >= 1)
+		currentPos = std::fmod(currentPos,numLed);
+		if(std::abs(currentPos - trail[0]) >= 1
+				)
 		{
-			trail.push((int)currentPos);
+			trail.push_back((int)currentPos);
 		}
 
-		for(int i = 0; i<trail.size(); i++)
+		for(std::size_t i = 0; i<trail.size(); i++)
 		{
 			Color c = color;
-			c.setBrightness(1-i/trailLength);
-			frame[trail.getElementAt(i)] = c;
+			c.setBrightness(1.0-(float)i/(float)trailLength);
+			frame[trail[i]] = c;
 		}
 
 		return 0;
